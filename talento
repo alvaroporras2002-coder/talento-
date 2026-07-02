@@ -1,0 +1,839 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Espacio Educativo de Talentos</title>
+  <style>
+    :root {
+      --bg: #050816;
+      --bg2: #0b1230;
+      --card: rgba(12, 18, 42, 0.72);
+      --card-strong: rgba(15, 22, 54, 0.92);
+      --text: #ecf4ff;
+      --muted: #a9b7d0;
+      --line: rgba(174, 203, 255, 0.16);
+      --neon: #7cf7ff;
+      --neon2: #a855f7;
+      --hot: #ff8bd4;
+      --warm: #ffd166;
+      --shadow: 0 20px 80px rgba(0, 0, 0, 0.45);
+      --radius: 24px;
+    }
+
+    * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
+    body {
+      margin: 0;
+      font-family: Inter, ui-sans-serif, system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+      color: var(--text);
+      background:
+        radial-gradient(circle at 20% 10%, rgba(124, 247, 255, 0.14), transparent 28%),
+        radial-gradient(circle at 80% 20%, rgba(168, 85, 247, 0.18), transparent 25%),
+        radial-gradient(circle at 50% 80%, rgba(255, 139, 212, 0.10), transparent 30%),
+        linear-gradient(160deg, var(--bg), var(--bg2));
+      min-height: 100vh;
+      overflow-x: hidden;
+    }
+
+    .noise {
+      pointer-events: none;
+      position: fixed;
+      inset: 0;
+      opacity: 0.06;
+      background-image: radial-gradient(rgba(255,255,255,0.25) 1px, transparent 1px);
+      background-size: 20px 20px;
+      mix-blend-mode: screen;
+      z-index: 0;
+    }
+
+    .orb {
+      position: fixed;
+      width: 380px;
+      height: 380px;
+      border-radius: 50%;
+      filter: blur(55px);
+      opacity: 0.16;
+      z-index: 0;
+      animation: float 12s ease-in-out infinite;
+    }
+    .orb.one { top: -80px; left: -90px; background: var(--neon); }
+    .orb.two { top: 18%; right: -100px; background: var(--neon2); animation-delay: -4s; }
+    .orb.three { bottom: -120px; left: 30%; background: var(--hot); animation-delay: -8s; }
+
+    @keyframes float {
+      0%, 100% { transform: translate3d(0, 0, 0) scale(1); }
+      50% { transform: translate3d(20px, -28px, 0) scale(1.08); }
+    }
+
+    .wrap {
+      position: relative;
+      z-index: 1;
+      width: min(1200px, calc(100% - 32px));
+      margin: 0 auto;
+      padding: 24px 0 60px;
+    }
+
+    .topbar {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 16px;
+      padding: 14px 18px;
+      margin: 12px 0 26px;
+      border: 1px solid var(--line);
+      background: rgba(6, 12, 30, 0.48);
+      backdrop-filter: blur(14px);
+      border-radius: 999px;
+      box-shadow: var(--shadow);
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      font-weight: 800;
+      letter-spacing: 0.4px;
+    }
+
+    .logo {
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      background: linear-gradient(135deg, var(--neon), var(--neon2) 55%, var(--hot));
+      box-shadow: 0 0 18px rgba(124, 247, 255, 0.4);
+      position: relative;
+      overflow: hidden;
+    }
+    .logo::after {
+      content: "";
+      position: absolute;
+      inset: 7px;
+      border: 2px solid rgba(255,255,255,0.75);
+      border-radius: 9px;
+      transform: rotate(8deg);
+    }
+
+    .nav {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      justify-content: center;
+    }
+    .nav a {
+      color: var(--muted);
+      text-decoration: none;
+      font-size: 0.95rem;
+      padding: 10px 14px;
+      border-radius: 999px;
+      transition: 0.25s ease;
+    }
+    .nav a:hover {
+      color: var(--text);
+      background: rgba(255,255,255,0.06);
+    }
+
+    .pill {
+      padding: 10px 14px;
+      border-radius: 999px;
+      border: 1px solid rgba(124, 247, 255, 0.22);
+      background: linear-gradient(135deg, rgba(124,247,255,0.14), rgba(168,85,247,0.10));
+      color: var(--text);
+      font-size: 0.92rem;
+      white-space: nowrap;
+    }
+
+    .hero {
+      display: grid;
+      grid-template-columns: 1.2fr 0.8fr;
+      gap: 22px;
+      align-items: stretch;
+      margin-top: 18px;
+    }
+
+    .panel {
+      position: relative;
+      overflow: hidden;
+      border: 1px solid var(--line);
+      background: linear-gradient(180deg, rgba(14, 21, 49, 0.85), rgba(7, 12, 31, 0.7));
+      backdrop-filter: blur(16px);
+      border-radius: 32px;
+      box-shadow: var(--shadow);
+    }
+
+    .hero-main {
+      padding: 34px;
+      min-height: 520px;
+    }
+
+    .eyebrow {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 16px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.07);
+      color: var(--muted);
+      font-size: 0.92rem;
+    }
+    .dot {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: var(--neon);
+      box-shadow: 0 0 16px var(--neon);
+    }
+
+    h1 {
+      margin: 18px 0 12px;
+      font-size: clamp(2.6rem, 5vw, 5.5rem);
+      line-height: 0.95;
+      letter-spacing: -0.05em;
+    }
+
+    .gradient-text {
+      background: linear-gradient(90deg, #fff, var(--neon), #d7bbff, var(--hot));
+      -webkit-background-clip: text;
+      background-clip: text;
+      color: transparent;
+      background-size: 220% 100%;
+      animation: shimmer 5s linear infinite;
+    }
+
+    @keyframes shimmer {
+      0% { background-position: 0% 50%; }
+      100% { background-position: 220% 50%; }
+    }
+
+    .hero p {
+      max-width: 60ch;
+      color: var(--muted);
+      font-size: 1.08rem;
+      line-height: 1.75;
+      margin-bottom: 22px;
+    }
+
+    .actions {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 12px;
+      margin-bottom: 28px;
+    }
+
+    .btn {
+      border: 0;
+      cursor: pointer;
+      border-radius: 999px;
+      padding: 14px 18px;
+      color: var(--text);
+      font-weight: 700;
+      letter-spacing: 0.2px;
+      transition: 0.25s ease;
+      transform: translateY(0);
+    }
+    .btn:hover { transform: translateY(-2px); }
+    .btn.primary {
+      background: linear-gradient(135deg, var(--neon), var(--neon2));
+      box-shadow: 0 14px 34px rgba(124, 247, 255, 0.22);
+    }
+    .btn.ghost {
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.10);
+    }
+
+    .stats {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+      margin-top: 14px;
+    }
+
+    .stat {
+      padding: 18px;
+      border-radius: 22px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .stat strong {
+      display: block;
+      font-size: 1.8rem;
+      margin-bottom: 6px;
+    }
+    .stat span { color: var(--muted); font-size: 0.95rem; }
+
+    .hero-side {
+      padding: 20px;
+      display: grid;
+      gap: 16px;
+      align-content: start;
+    }
+
+    .fusion-box, .ticker-box, .preview-box {
+      border-radius: 26px;
+      padding: 20px;
+      border: 1px solid var(--line);
+      background: rgba(255,255,255,0.04);
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fusion-box h3, .ticker-box h3, .preview-box h3 {
+      margin: 0 0 8px;
+      font-size: 1.05rem;
+    }
+    .fusion-box p, .ticker-box p, .preview-box p {
+      margin: 0;
+      color: var(--muted);
+      line-height: 1.6;
+      font-size: 0.95rem;
+    }
+
+    .chip-row {
+      display: flex;
+      gap: 10px;
+      flex-wrap: wrap;
+      margin-top: 14px;
+    }
+    .chip {
+      padding: 8px 11px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      border: 1px solid rgba(255,255,255,0.08);
+      color: var(--text);
+      font-size: 0.88rem;
+      cursor: pointer;
+      transition: .2s ease;
+    }
+    .chip:hover { background: rgba(124,247,255,0.15); }
+
+    .floating-card {
+      margin-top: 14px;
+      border-radius: 22px;
+      padding: 18px;
+      background: linear-gradient(135deg, rgba(124,247,255,0.12), rgba(168,85,247,0.12));
+      border: 1px solid rgba(255,255,255,0.08);
+      animation: pulse 3.6s ease-in-out infinite;
+    }
+
+    @keyframes pulse {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-4px); }
+    }
+
+    .section {
+      margin-top: 22px;
+      padding: 26px;
+    }
+
+    .section-head {
+      display: flex;
+      align-items: end;
+      justify-content: space-between;
+      gap: 18px;
+      margin-bottom: 18px;
+      flex-wrap: wrap;
+    }
+    .section-head h2 {
+      margin: 0;
+      font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+      letter-spacing: -0.04em;
+    }
+    .section-head p {
+      margin: 0;
+      color: var(--muted);
+      max-width: 60ch;
+      line-height: 1.6;
+    }
+
+    .talent-grid {
+      display: grid;
+      grid-template-columns: repeat(4, minmax(0, 1fr));
+      gap: 16px;
+    }
+
+    .talent {
+      min-height: 220px;
+      padding: 18px;
+      border-radius: 24px;
+      background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.03));
+      border: 1px solid rgba(255,255,255,0.09);
+      transition: transform .25s ease, border-color .25s ease, box-shadow .25s ease;
+      cursor: pointer;
+      position: relative;
+      overflow: hidden;
+    }
+    .talent::before {
+      content: "";
+      position: absolute;
+      inset: auto -20% -30% auto;
+      width: 160px;
+      height: 160px;
+      border-radius: 50%;
+      background: radial-gradient(circle, rgba(124,247,255,0.28), transparent 65%);
+      filter: blur(6px);
+    }
+    .talent:hover {
+      transform: translateY(-6px) scale(1.01);
+      border-color: rgba(124,247,255,0.36);
+      box-shadow: 0 18px 50px rgba(0,0,0,0.35);
+    }
+    .icon {
+      width: 58px;
+      height: 58px;
+      border-radius: 18px;
+      display: grid;
+      place-items: center;
+      font-size: 1.6rem;
+      margin-bottom: 14px;
+      background: linear-gradient(135deg, rgba(124,247,255,0.22), rgba(168,85,247,0.18));
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .talent h3 { margin: 0 0 8px; font-size: 1.2rem; }
+    .talent p { margin: 0; color: var(--muted); line-height: 1.55; }
+
+    .tag {
+      display: inline-flex;
+      margin-top: 14px;
+      padding: 8px 10px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.05);
+      color: #d9e8ff;
+      font-size: 0.86rem;
+    }
+
+    .rail {
+      display: grid;
+      grid-auto-flow: column;
+      grid-auto-columns: minmax(260px, 1fr);
+      gap: 14px;
+      overflow-x: auto;
+      padding-bottom: 6px;
+      scroll-snap-type: x mandatory;
+    }
+    .rail::-webkit-scrollbar { height: 10px; }
+    .rail::-webkit-scrollbar-thumb {
+      background: linear-gradient(90deg, var(--neon), var(--neon2));
+      border-radius: 999px;
+    }
+    .fusion-card {
+      scroll-snap-align: start;
+      min-height: 240px;
+      padding: 20px;
+      border-radius: 24px;
+      background: linear-gradient(135deg, rgba(124,247,255,0.10), rgba(255,255,255,0.04));
+      border: 1px solid rgba(255,255,255,0.08);
+      position: relative;
+      overflow: hidden;
+      transition: 0.28s ease;
+    }
+    .fusion-card:hover {
+      transform: translateY(-4px) rotate(-0.5deg);
+      box-shadow: 0 20px 50px rgba(0,0,0,0.3);
+    }
+    .fusion-card strong { display: block; font-size: 1.18rem; margin-bottom: 8px; }
+    .fusion-card p { color: var(--muted); line-height: 1.6; margin: 0 0 16px; }
+    .mini {
+      display: flex;
+      gap: 8px;
+      flex-wrap: wrap;
+    }
+    .mini span {
+      padding: 7px 9px;
+      border-radius: 999px;
+      background: rgba(255,255,255,0.06);
+      font-size: 0.85rem;
+    }
+
+    .timeline {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 14px;
+    }
+    .step {
+      padding: 20px;
+      border-radius: 24px;
+      background: rgba(255,255,255,0.04);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .step .num {
+      display: inline-grid;
+      place-items: center;
+      width: 38px;
+      height: 38px;
+      border-radius: 12px;
+      margin-bottom: 12px;
+      background: linear-gradient(135deg, var(--neon), var(--hot));
+      color: #081022;
+      font-weight: 900;
+    }
+    .step h4 { margin: 0 0 8px; font-size: 1.05rem; }
+    .step p { margin: 0; color: var(--muted); line-height: 1.6; }
+
+    .footer {
+      margin-top: 20px;
+      padding: 22px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 0.95rem;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      inset: 0;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      background: rgba(3, 7, 18, 0.7);
+      backdrop-filter: blur(12px);
+      z-index: 100;
+      padding: 18px;
+    }
+    .modal.show { display: flex; animation: fadeIn .22s ease; }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    .modal-card {
+      width: min(720px, 100%);
+      border-radius: 30px;
+      border: 1px solid rgba(255,255,255,0.10);
+      background: linear-gradient(180deg, rgba(12, 18, 42, 0.98), rgba(8, 13, 30, 0.98));
+      box-shadow: var(--shadow);
+      overflow: hidden;
+      transform: translateY(12px) scale(0.98);
+      animation: rise .24s ease forwards;
+    }
+    @keyframes rise { to { transform: translateY(0) scale(1); } }
+    .modal-top {
+      padding: 22px 22px 0;
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      align-items: start;
+    }
+    .close {
+      border: 0;
+      background: rgba(255,255,255,0.08);
+      color: var(--text);
+      width: 42px;
+      height: 42px;
+      border-radius: 50%;
+      cursor: pointer;
+      font-size: 1.2rem;
+    }
+    .modal-content {
+      padding: 0 22px 22px;
+    }
+    .modal-content h3 {
+      margin: 6px 0 8px;
+      font-size: 1.6rem;
+    }
+    .modal-content p {
+      color: var(--muted);
+      line-height: 1.8;
+      margin: 0 0 18px;
+    }
+    .modal-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 12px;
+    }
+    .modal-grid div {
+      padding: 16px;
+      border-radius: 20px;
+      background: rgba(255,255,255,0.05);
+      border: 1px solid rgba(255,255,255,0.08);
+    }
+    .modal-grid strong { display: block; margin-bottom: 6px; }
+    .modal-grid span { color: var(--muted); }
+
+    /* Reveal */
+    .reveal {
+      opacity: 0;
+      transform: translateY(18px);
+      transition: opacity .7s ease, transform .7s ease;
+    }
+    .reveal.visible { opacity: 1; transform: translateY(0); }
+
+    @media (max-width: 1080px) {
+      .hero, .talent-grid, .timeline, .modal-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    }
+    @media (max-width: 720px) {
+      .wrap { width: min(100% - 20px, 1200px); }
+      .topbar { border-radius: 28px; padding: 16px; flex-direction: column; }
+      .hero, .talent-grid, .timeline, .modal-grid, .stats { grid-template-columns: 1fr; }
+      .hero-main { padding: 24px; min-height: auto; }
+      h1 { font-size: 2.7rem; }
+      .nav { width: 100%; }
+      .nav a { padding: 8px 10px; }
+    }
+
+    /* Subtle slider motion */
+    .slide-left { animation: slideLeft 7s ease-in-out infinite; }
+    @keyframes slideLeft {
+      0%,100% { transform: translateX(0); }
+      50% { transform: translateX(-8px); }
+    }
+  </style>
+</head>
+<body>
+  <div class="noise"></div>
+  <div class="orb one"></div>
+  <div class="orb two"></div>
+  <div class="orb three"></div>
+
+  <main class="wrap">
+    <header class="topbar reveal">
+      <div class="brand">
+        <div class="logo"></div>
+        <div>
+          <div>Talent Lab</div>
+          <small style="color: var(--muted);">Espacio educativo futurista</small>
+        </div>
+      </div>
+      <nav class="nav">
+        <a href="#talentos">Talentos</a>
+        <a href="#fusion">Fusiones</a>
+        <a href="#ruta">Ruta</a>
+      </nav>
+      <div class="pill">Live • creatividad + tecnología</div>
+    </header>
+
+    <section class="hero">
+      <article class="panel hero-main reveal">
+        <div class="eyebrow"><span class="dot"></span> Plataforma inmersiva para descubrir talentos</div>
+        <h1><span class="gradient-text">Explora</span> habilidades, mezcla estilos y crea tu futuro</h1>
+        <p>
+          Una página educativa pensada para mostrar talentos artísticos, musicales, deportivos y creativos con una estética
+          tecnológica, futurista e innovadora. Todo está diseñado para sentirse vivo: tarjetas que flotan, ventanas emergentes,
+          deslizamientos horizontales y fusiones visuales entre disciplinas.
+        </p>
+
+        <div class="actions">
+          <button class="btn primary" id="openWelcome">Abrir experiencia</button>
+          <button class="btn ghost" onclick="document.querySelector('#talentos').scrollIntoView({behavior:'smooth'})">Ver talentos</button>
+        </div>
+
+        <div class="stats">
+          <div class="stat slide-left">
+            <strong>04+</strong>
+            <span>Áreas creativas para explorar</span>
+          </div>
+          <div class="stat slide-left" style="animation-delay:-1.5s;">
+            <strong>12</strong>
+            <span>Interacciones animadas</span>
+          </div>
+          <div class="stat slide-left" style="animation-delay:-3s;">
+            <strong>∞</strong>
+            <span>Combinaciones de talentos</span>
+          </div>
+        </div>
+      </article>
+
+      <aside class="panel hero-side reveal">
+        <div class="preview-box">
+          <h3>Centro de control creativo</h3>
+          <p>Activa una tarjeta para ver detalles en un popup futurista.</p>
+          <div class="chip-row">
+            <button class="chip" data-fusion="Arte + Música">Arte + Música</button>
+            <button class="chip" data-fusion="Danza + Ritmo">Danza + Ritmo</button>
+            <button class="chip" data-fusion="Lectura + Imaginación">Lectura + Imaginación</button>
+          </div>
+        </div>
+        <div class="fusion-box">
+          <h3>Fusión destacada</h3>
+          <p id="fusionText">Una idea puede convertirse en varias disciplinas al mismo tiempo.</p>
+          <div class="floating-card">
+            <strong>Modo creativo activado</strong>
+            <span style="color: var(--muted);">Desplazamientos suaves + brillo neón + microinteracciones.</span>
+          </div>
+        </div>
+        <div class="ticker-box">
+          <h3>Tip del día</h3>
+          <p>La creatividad crece cuando mezclas práctica, curiosidad y constancia.</p>
+        </div>
+      </aside>
+    </section>
+
+    <section id="talentos" class="panel section reveal">
+      <div class="section-head">
+        <div>
+          <h2>Talentos principales</h2>
+          <p>Inspirado en arte, música, lectura, danza y expresión visual. Haz clic en cada tarjeta para abrir una ventana emergente.</p>
+        </div>
+        <div class="pill">Toca una tarjeta</div>
+      </div>
+
+      <div class="talent-grid">
+        <article class="talent" data-title="Arte Digital" data-desc="Explora dibujo, color, composición y creatividad visual con herramientas modernas y una interfaz inmersiva." data-features="Animación, color, diseño">
+          <div class="icon">🎨</div>
+          <h3>Arte Digital</h3>
+          <p>Creación visual con paletas brillantes, capas y composición moderna.</p>
+          <span class="tag">Visual • IA • Diseño</span>
+        </article>
+
+        <article class="talent" data-title="Música" data-desc="Conecta ritmo, voz e instrumentos con un entorno futurista que celebra el talento sonoro." data-features="Ritmo, voz, guitarra">
+          <div class="icon">🎵</div>
+          <h3>Música</h3>
+          <p>Instrumentos, canto y producción con pulsos animados y energía dinámica.</p>
+          <span class="tag">Audio • Ritmo • Expresión</span>
+        </article>
+
+        <article class="talent" data-title="Lectura Creativa" data-desc="Convierte historias en imaginación activa, pensamiento crítico y descubrimiento de ideas." data-features="Historias, ideas, reflexión">
+          <div class="icon">📚</div>
+          <h3>Lectura Creativa</h3>
+          <p>Libros, imaginación y análisis para aprender con profundidad y estilo.</p>
+          <span class="tag">Lectura • Ideas • Enfoque</span>
+        </article>
+
+        <article class="talent" data-title="Danza" data-desc="Movimiento, coordinación y expresión corporal con transiciones suaves y sensación de energía." data-features="Movimiento, ritmo, cuerpo">
+          <div class="icon">💃</div>
+          <h3>Danza</h3>
+          <p>Coreografías, ritmo y presencia escénica con una experiencia vibrante.</p>
+          <span class="tag">Movimiento • Estilo • Ritmo</span>
+        </article>
+      </div>
+    </section>
+
+    <section id="fusion" class="panel section reveal">
+      <div class="section-head">
+        <div>
+          <h2>Laboratorio de fusiones</h2>
+          <p>Desliza horizontalmente para descubrir combinaciones de talentos. Cada bloque mezcla habilidades y posibilidades educativas.</p>
+        </div>
+        <div class="pill">Swipe / scroll</div>
+      </div>
+
+      <div class="rail">
+        <div class="fusion-card">
+          <strong>Arte + Tecnología</strong>
+          <p>Ilustración, diseño UX y herramientas digitales para crear piezas interactivas con futuro.</p>
+          <div class="mini"><span>UI</span><span>3D</span><span>Motion</span></div>
+        </div>
+        <div class="fusion-card">
+          <strong>Música + IA</strong>
+          <p>Ritmos, composición asistida y sonido inteligente para aprender y experimentar con nuevos formatos.</p>
+          <div class="mini"><span>Beat</span><span>Audio</span><span>Machine Learning</span></div>
+        </div>
+        <div class="fusion-card">
+          <strong>Danza + Luz</strong>
+          <p>Movimiento escénico con sincronía visual, efectos luminosos y una estética de show inmersivo.</p>
+          <div class="mini"><span>Stage</span><span>Glow</span><span>Flow</span></div>
+        </div>
+        <div class="fusion-card">
+          <strong>Lectura + Narrativa</strong>
+          <p>Historias que enseñan pensamiento, vocabulario y creatividad con interacción guiada.</p>
+          <div class="mini"><span>Story</span><span>Focus</span><span>Mind</span></div>
+        </div>
+        <div class="fusion-card">
+          <strong>Arte + Música</strong>
+          <p>Una composición visual que responde al ritmo, convirtiendo sonidos en color y forma.</p>
+          <div class="mini"><span>Color</span><span>Beat</span><span>Fusion</span></div>
+        </div>
+      </div>
+    </section>
+
+    <section id="ruta" class="panel section reveal">
+      <div class="section-head">
+        <div>
+          <h2>Ruta de aprendizaje</h2>
+          <p>Un recorrido simple para guiar a estudiantes desde el descubrimiento hasta la presentación de su talento.</p>
+        </div>
+      </div>
+
+      <div class="timeline">
+        <div class="step">
+          <div class="num">1</div>
+          <h4>Descubre</h4>
+          <p>Explora diferentes áreas para identificar lo que te inspira más y donde brillas con naturalidad.</p>
+        </div>
+        <div class="step">
+          <div class="num">2</div>
+          <h4>Practica</h4>
+          <p>Desarrolla tu habilidad con ejercicios, retos y espacios de aprendizaje visualmente atractivos.</p>
+        </div>
+        <div class="step">
+          <div class="num">3</div>
+          <h4>Comparte</h4>
+          <p>Presenta tu talento con orgullo mediante experiencias interactivas, popups y animaciones de presentación.</p>
+        </div>
+      </div>
+    </section>
+
+    <footer class="footer">
+      Diseñado como un espacio educativo de talentos con una estética futurista, innovadora e inmersiva.
+    </footer>
+  </main>
+
+  <div class="modal" id="modal">
+    <div class="modal-card">
+      <div class="modal-top">
+        <div>
+          <div class="eyebrow"><span class="dot"></span> Ventana emergente interactiva</div>
+          <h3 id="modalTitle">Talento</h3>
+        </div>
+        <button class="close" id="closeModal">×</button>
+      </div>
+      <div class="modal-content">
+        <p id="modalDesc"></p>
+        <div class="modal-grid">
+          <div><strong>Enfoque</strong><span id="modalFeature1">Creatividad</span></div>
+          <div><strong>Aprendizaje</strong><span id="modalFeature2">Práctica guiada</span></div>
+          <div><strong>Resultado</strong><span id="modalFeature3">Expresión personal</span></div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    const modal = document.getElementById('modal');
+    const modalTitle = document.getElementById('modalTitle');
+    const modalDesc = document.getElementById('modalDesc');
+    const modalFeature1 = document.getElementById('modalFeature1');
+    const modalFeature2 = document.getElementById('modalFeature2');
+    const modalFeature3 = document.getElementById('modalFeature3');
+    const fusionText = document.getElementById('fusionText');
+
+    document.querySelectorAll('.talent').forEach(card => {
+      card.addEventListener('click', () => {
+        const title = card.dataset.title || 'Talento';
+        const desc = card.dataset.desc || '';
+        const features = (card.dataset.features || '').split(',').map(s => s.trim());
+        modalTitle.textContent = title;
+        modalDesc.textContent = desc;
+        modalFeature1.textContent = features[0] || 'Creatividad';
+        modalFeature2.textContent = features[1] || 'Práctica guiada';
+        modalFeature3.textContent = features[2] || 'Expresión personal';
+        modal.classList.add('show');
+      });
+    });
+
+    document.getElementById('closeModal').addEventListener('click', () => modal.classList.remove('show'));
+    modal.addEventListener('click', (e) => { if (e.target === modal) modal.classList.remove('show'); });
+    window.addEventListener('keydown', (e) => { if (e.key === 'Escape') modal.classList.remove('show'); });
+
+    document.getElementById('openWelcome').addEventListener('click', () => {
+      modalTitle.textContent = 'Bienvenido al Talent Lab';
+      modalDesc.textContent = 'Este espacio mezcla educación, creatividad y tecnología para que los talentos se sientan modernos, vivos e interactivos.';
+      modalFeature1.textContent = 'Animación';
+      modalFeature2.textContent = 'Exploración';
+      modalFeature3.textContent = 'Innovación';
+      modal.classList.add('show');
+    });
+
+    document.querySelectorAll('.chip').forEach(chip => {
+      chip.addEventListener('click', () => {
+        const fusion = chip.dataset.fusion || 'Fusión creativa';
+        fusionText.textContent = `Fusión activa: ${fusion}. Ideal para experiencias educativas interactivas y visualmente futuristas.`;
+      });
+    });
+
+    const observer = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) entry.target.classList.add('visible');
+      });
+    }, { threshold: 0.15 });
+
+    document.querySelectorAll('.reveal').forEach(el => observer.observe(el));
+  </script>
+</body>
+</html>
